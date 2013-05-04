@@ -1,9 +1,13 @@
 import redis
-import itertools
 import time
+import requests
+import json
 
 r = redis.Redis()
 
-for image_name in itertools.cycle(['image1.jpg', 'image2.jpg', 'image3.jpg']):
-    r.publish('comic', image_name)
-    time.sleep(5)
+res = requests.get('https://api.instagram.com/v1/tags/carl/media/recent?access_token=106417.41beab8.b0c84849cab346ffa6a624cf43cb1eb1')
+images = json.loads(res.content)['data']
+
+for image in images:
+    url = image['images']['standard_resolution']['url']
+    r.publish('comic', url)

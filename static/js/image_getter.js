@@ -9,7 +9,7 @@
         var imageName = evt.data,
             $img = document.createElement('img');
 
-        $img.src = '/static/images/' + imageName;
+        $img.src = imageName;
 
         $images.appendChild($img);
     });
