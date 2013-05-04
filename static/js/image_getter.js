@@ -11,13 +11,13 @@
 
         $img.src = imageName;
 
-        $img.onload = function () {
+        $img.addEventListener('load', function (evt) {
             $images.appendChild($img);
             setTimeout(
                 function () { $img.classList.add('visible'); },
                 0
             );
-        };
+        });
 
     });
 
