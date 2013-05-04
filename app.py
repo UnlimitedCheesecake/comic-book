@@ -23,7 +23,7 @@ templates = {
 def index():
     if request.headers.get('accept') == 'text/event-stream':
         def images():
-            for title in itertools.cycle(('image1.png', 'image2.png', 'image3.png')):
+            for title in itertools.cycle(('image1.jpg', 'image2.jpg', 'image3.jpg')):
                 yield 'event: comic\n'
                 yield 'data: %s\n\n' % title
                 time.sleep(5)
