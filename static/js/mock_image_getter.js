@@ -9,7 +9,7 @@
             index = (i % 3),
             imageName = images[0];
 
-        var texture = new THREE.Texture( $img, THREE.UVMapping );
+        var texture = new THREE.Texture( image, THREE.UVMapping );
         image.onload = function () {
             texture.needsUpdate = true;
             addImage(texture);
