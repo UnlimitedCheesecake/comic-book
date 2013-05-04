@@ -1,0 +1,10 @@
+body {
+    background-color: #000;
+}
+
+img {
+    background-color: #fff;
+    padding: 5px;
+    height: 250px;
+    margin: -2px;
+}
