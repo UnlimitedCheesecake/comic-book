@@ -1,6 +1,7 @@
 import redis
 import requests
 import json
+import time
 
 r = redis.Redis()
 
@@ -10,3 +11,4 @@ images = json.loads(res.content)['data']
 for image in images:
     url = image['images']['standard_resolution']['url']
     r.publish('comic', url)
+    time.sleep(5)
