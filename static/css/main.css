@@ -7,4 +7,10 @@ img {
     padding: 5px;
     height: 250px;
     margin: -2px;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s;
+}
+
+.visible {
+    opacity: 1;
 }

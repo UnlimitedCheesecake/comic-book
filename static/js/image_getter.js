@@ -13,6 +13,10 @@
 
         $img.onload = function () {
             $images.appendChild($img);
+            setTimeout(
+                function () { $img.classList.add('visible'); },
+                0
+            );
         };
 
     });
