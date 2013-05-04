@@ -136,12 +136,11 @@
                 quad = new THREE.Mesh( pageGeometryA4, pageMaterial );
                 quad.scale.x = 400;
                 quad.scale.y = 400;
-                quad.position.z = -800;
+                quad.position.z = -400;
                 scene.add( quad );
 
 
                 frameGeometry = new THREE.PlaneGeometry( 50, 50);
-
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -185,30 +184,31 @@
 
                 camera.lookAt( scene.position );
 
-
+                for (var i=0; i<comicFrames.length; i++) {
+                    comicFrames[i].position.x -= 0.01;
+                }
+                renderer.setClearColor(new THREE.Color(0x000000));
                 renderer.clear();
 
-                // Render first scene into texture
+                renderer.setClearColor(new THREE.Color(0xFFFFFF));
+                renderer.clearTarget( pageTexture, 1, 1, 1);
+
+
+
                 renderer.render( pageScene, pageCamera, pageTexture, true );
-
-                // Render full screen quad with generated texture
-
-                // Render second scene to screen
-                // (using first scene as regular texture)
-
                 renderer.render( scene, camera );
 
             }
 
             function addImage(texture) {
                 var textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
-                framePos += 10;
-                var quad = new THREE.Mesh( frameGeometry, textureMaterial );
-                quad.position.z = framePos;
-                quad.position.x = framePos;
-                quad.position.y = framePos;
-                pageScene.add( quad );
-
+                framePos += 3;
+                var frameMesh = new THREE.Mesh( frameGeometry, textureMaterial );
+                frameMesh.position.z = 10* Math.random();
+                frameMesh.position.x = framePos;
+                frameMesh.position.y = 10* Math.random();
+                pageScene.add( frameMesh );
+                comicFrames.push(frameMesh);
             }
 
         </script>
