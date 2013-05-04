@@ -26,9 +26,10 @@ def index():
         pubsub.subscribe(['comic'])
 
         def images():
-            for img in pubsub.listen():
-                yield 'event: comic\n'
-                yield 'data: %s\n\n' % img['data']
+            for msg in pubsub.listen():
+                if msg['type'] == 'message':
+                    yield 'event: comic\n'
+                    yield 'data: %s\n\n' % msg['data']
         return Response(images(), content_type='text/event-stream')
 
     return pystache.render(
