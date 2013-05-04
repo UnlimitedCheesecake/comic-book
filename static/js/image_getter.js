@@ -11,7 +11,10 @@
 
         $img.src = imageName;
 
-        $images.appendChild($img);
+        $img.onload = function () {
+            $images.appendChild($img);
+        };
+
     });
 
 }(document, window));
