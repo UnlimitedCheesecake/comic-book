@@ -17,14 +17,14 @@ templates = {
     'comic': loader.load_name('comic')
 }
 
-r = redis.Redis()
-pubsub = r.pubsub()
-pubsub.subscribe(['comic'])
-
 
 @app.route('/')
 def index():
     if request.headers.get('accept') == 'text/event-stream':
+        r = redis.Redis()
+        pubsub = r.pubsub()
+        pubsub.subscribe(['comic'])
+
         def images():
             for img in pubsub.listen():
                 yield 'event: comic\n'
