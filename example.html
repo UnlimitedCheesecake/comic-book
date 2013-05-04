@@ -97,7 +97,7 @@
             var windowHalfY = window.innerHeight / 2;
 
             var rtTexture, material, quad;
-            var material2;
+            var textureMaterial;
 
             var delta = 0.01;
 
@@ -109,10 +109,10 @@
                 container = document.getElementById( 'container' );
 
                 camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
-                camera.position.z = 100;
+                camera.position.z = 500;
 
-                cameraRTT = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
-                cameraRTT.position.z = 100;
+                cameraRTT = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+                cameraRTT.position.z = 1000;
 
                 //
 
@@ -149,9 +149,10 @@
                 } );
 
                 var plane = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+                textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: rtTexture } );
 
-                quad = new THREE.Mesh( plane, material );
-                quad.position.z = -100;
+                quad = new THREE.Mesh( plane, textureMaterial );
+                quad.position.z = -600;
                 sceneRTT.add( quad );
 
                 var geometry = new THREE.TorusGeometry( 100, 25, 15, 30 );
@@ -169,13 +170,16 @@
                 zmesh2.scale.set( 0.75, 0.75, 0.75 );
                 sceneRTT.add( zmesh2 );
 
-                quad = new THREE.Mesh( plane, materialScreen );
-                quad.position.z = -100;
-                sceneScreen.add( quad );
+                var pageGeometryA4 = new THREE.PlaneGeometry( 1.0, 1.414285714 );
+                quad = new THREE.Mesh( pageGeometryA4, materialScreen );
+                quad.scale.x = 400;
+                quad.scale.y = 400;
+                quad.position.z = -1800;
+                scene.add( quad );
 
                 var n = 5,
-                    geometry = new THREE.SphereGeometry( 10, 64, 32 );
-                material2 = new THREE.MeshBasicMaterial( { color: 0xffffff, map: rtTexture } );
+                    geometry = new THREE.SphereGeometry( 10, 64, 32 ),
+                    material2 = new THREE.MeshBasicMaterial( { color: 0xffffff, map: rtTexture } );
 
                 for( var j = 0; j < n; j ++ ) {
 
@@ -260,7 +264,7 @@
 
                 // Render full screen quad with generated texture
 
-                renderer.render( sceneScreen, cameraRTT );
+                //renderer.render( sceneScreen, cameraRTT);
 
                 // Render second scene to screen
                 // (using first scene as regular texture)
@@ -270,7 +274,7 @@
             }
 
             function addImage(texture) {
-                material2.map = texture;
+                textureMaterial.map = texture;
 
             }
 
