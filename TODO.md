@@ -5,7 +5,7 @@ Message capturer
 ----------------
 Captures messages from streams e.g. Twitter and Instagram and sends them on for processing.
 
- - ~~ Make an Instagram test aggregator that takes images via the API for a particular account and then adds them to a Redis queue. ~~
+ - ~~Make an Instagram test aggregator that takes images via the API for a particular account and then adds them to a Redis queue.~~
  - Create a view that hooks into Instagram webhook to pick up images from a tag in real time. 
 
 Image capturer
