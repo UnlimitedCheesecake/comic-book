@@ -3,7 +3,6 @@ import requests
 import json
 import time
 import os
-import logging
 
 r = redis.Redis()
 
@@ -20,6 +19,5 @@ while True:
 
     for image in images:
         url = image['images']['standard_resolution']['url']
-        logging.debug('Publishing %s' % url)
         r.publish('comic', url)
         time.sleep(5)
