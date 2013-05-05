@@ -28,5 +28,5 @@ Image displayer
 ---------------
 Displays images in realtime in WebGL as a comic book.
 
- - Get Instagram description overlapping image. 
+ - Get Instagram description overlapping image. Use http://www.fontsquirrel.com/fonts/Komika-Text. 
  - Create some test transitions. 
