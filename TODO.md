@@ -23,3 +23,6 @@ A server sending SSE of image URLs to be obtained by the frontend for display.
 Image displayer
 ---------------
 Displays images in realtime in WebGL as a comic book.
+
+ - Get Instagram description overlapping image. 
+ - Create some test transitions. 
