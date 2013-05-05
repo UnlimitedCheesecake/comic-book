@@ -9,3 +9,4 @@ gunicorn==0.16.1
 requests==1.2.0
 gevent
 redis==2.7.4
+python-instagram==0.8.0
