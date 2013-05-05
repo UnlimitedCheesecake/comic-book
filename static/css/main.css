@@ -14,3 +14,29 @@ img {
 .visible {
     opacity: 1;
 }
+
+.image-wrapper {
+    width: 514px;
+    height: 518px;
+    overflow: hidden;
+    display: block;
+}
+
+.images {
+    width: 1200px;
+    height: 1200px;
+    /*-webkit-transition: all 0.2s;*/
+    -webkit-transform: translateZ(0);
+}
+
+.trans1 {
+    -webkit-transform: translateZ(0) translateX(600px) translateY(600px) scale(2);
+}
+
+.trans2 {
+    -webkit-transform: translateZ(0) translateX(600px) translateY(82px) scale(2);
+}
+
+.trans3 {
+    -webkit-transform: translateZ(0) translateY(-100px);
+}
