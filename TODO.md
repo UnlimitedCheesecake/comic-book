@@ -14,6 +14,10 @@ Captures tweets and instagrams and generates or grabs images probably in a cronj
 
  - Make a simple image getter that stores the image locally and then puts the new name on Redis.
 
+Image processor
+---------------
+Generated a new image with comic book processing. 
+
 Image sender
 ------------
 A server sending SSE of image URLs to be obtained by the frontend for display.
