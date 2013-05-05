@@ -38,6 +38,11 @@ def index():
     )
 
 
+@app.route('/instagram-callback/')
+def instagram_callback():
+    return request.args.get('hub.challenge')
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     http_server = WSGIServer(('0.0.0.0', port), app)
