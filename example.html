@@ -37,7 +37,6 @@
         <script src="/static/js/three/Detector.js"></script>
 
 
-        <script src="/static/js/mock_image_getter.js"></script>
         <script id="fragment_shader_screen" type="x-shader/x-fragment">
 
             varying vec2 vUv;
@@ -80,11 +79,17 @@
             var comicFrames = [];
             var framePos = 0;
 
-            var pageTexture, quad;
+            var pageTexture, pageMesh;
             var frameGeometry;
             var textureMaterial;
 
             var delta = 0.01;
+            var A4_ASPECT_RATIO = 1.414285714;
+            var FRAME_SIZE = 30;
+            var PAGE_WIDTH = 100.0;
+            var PAGE_MARGIN = 5.0;
+            var panelCoords;
+            var panelNum = 0;
 
             init();
             animate();
@@ -95,10 +100,12 @@
 
                 // Camera viewing the composited page
                 camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
-                camera.position.z = 100;
+                camera.position.z = 300;
 
                 // Camera viewing the individual frames on the flat page
-                pageCamera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+                // NOTE: Vertical coordinates are negated and start of at 0 at the top of the page and
+                // decrese untill thay hit - 100* A4 ratio. Can't get ortho projection to work with ascending coords...
+                pageCamera = new THREE.OrthographicCamera( 0, PAGE_WIDTH, 0, -PAGE_WIDTH*A4_ASPECT_RATIO, -10000, 10000 );
                 pageCamera.position.z = 100;
 
                 scene = new THREE.Scene();
@@ -130,18 +137,21 @@
 
                 } );
 
+                var pageGeometryA4 = new THREE.PlaneGeometry( PAGE_WIDTH, PAGE_WIDTH * A4_ASPECT_RATIO );
+                pageMesh = new THREE.Mesh( pageGeometryA4, pageMaterial );
+                pageMesh.position.z = 0;
+                scene.add( pageMesh );
 
+                // Prepare corner points for the panel frames
+                makeGrid(3, 4);
 
-                var pageGeometryA4 = new THREE.PlaneGeometry( 1.0, 1.414285714 );
-                quad = new THREE.Mesh( pageGeometryA4, pageMaterial );
-                quad.scale.x = 400;
-                quad.scale.y = 400;
-                quad.position.z = -800;
-                scene.add( quad );
-
-
-                frameGeometry = new THREE.PlaneGeometry( 50, 50);
-
+                // Modify the framge Geometry, so it's in the same 'coordinate system' as the page, (0,0) is the top corner
+                var vectorOffset = new THREE.Vector3(FRAME_SIZE/2, FRAME_SIZE/2, 0);
+                frameGeometry = new THREE.PlaneGeometry( FRAME_SIZE, FRAME_SIZE);
+                for (var i=0; i<frameGeometry.vertices.length; i++) {
+                    frameGeometry.vertices[i].add(vectorOffset);
+                }
+                frameGeometry.computeCentroids();
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -156,6 +166,55 @@
 
                 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
+            }
+
+            function PanelCoord(tl, tr, bl, br) {
+                this.tl = tl; this.tr = tr; this.bl = bl; this.br = br;
+            }
+
+            function makeGrid(xPanels, yPanels) {
+                //
+                panelCoords = new Array();
+
+                var corner = new THREE.Vector3(PAGE_MARGIN, -PAGE_MARGIN, 0),
+                    right = new THREE.Vector3(1, 0, 0),
+                    down = new THREE.Vector3(0, -1, 0);
+
+
+                for (var y=0; y < yPanels; y++) {
+                    for (var x=0; x < xPanels; x++) {
+                        var PANEL_WIDTH = (PAGE_WIDTH - (PAGE_MARGIN * (1 + xPanels))) / xPanels;
+                        var PANEL_HEIGHT = (PAGE_WIDTH*A4_ASPECT_RATIO - (PAGE_MARGIN * (1 + yPanels))) / yPanels;
+
+                        var panelW = new THREE.Vector3().addVectors(corner, right.clone().multiplyScalar(PANEL_WIDTH)),
+                            panelH = new THREE.Vector3().addVectors(corner, down.clone().multiplyScalar(PANEL_HEIGHT));
+
+                        panelCoords.push(new PanelCoord(
+                            corner.clone(),
+                            corner.clone().add(panelW),
+                            corner.clone().add(panelH),
+                            corner.clone().add(panelW).add(panelH)
+                        ));
+
+                        corner.add(right.clone().multiplyScalar(PAGE_MARGIN + PANEL_WIDTH));
+                    }
+                    corner.add(down.clone().multiplyScalar(PAGE_MARGIN + PANEL_HEIGHT));
+                    corner.x = PAGE_MARGIN;
+                }
+
+            }
+
+            function addImage(texture) {
+                // TODO: crete 4verts and 4 uv's by hand based on the grid
+                var textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
+                var frameMesh = new THREE.Mesh( frameGeometry, textureMaterial );
+                var coords = panelCoords[panelNum];
+                frameMesh.position.z = 0;
+                frameMesh.position.x = coords.tl.x;
+                frameMesh.position.y = coords.tl.y;
+                pageScene.add( frameMesh );
+                comicFrames.push(frameMesh);
+                panelNum++;
             }
 
             function onDocumentMouseMove( event ) {
@@ -185,32 +244,25 @@
 
                 camera.lookAt( scene.position );
 
+                // Test animation code. Ideally there will be code here to THREE.Tween() individual frames into their
+                // target positions and orientations.
+                // for (var i=0; i<comicFrames.length; i++) {
+                //    comicFrames[i].position.y -= 0.14;
+                //}
 
+                // Clear the background to black
+                renderer.setClearColor(new THREE.Color(0x000000));
                 renderer.clear();
 
-                // Render first scene into texture
+                // Clear the page to white
+                renderer.setClearColor(new THREE.Color(0xFFFFFF));
+                renderer.clearTarget( pageTexture, 1, 1, 1);
+
                 renderer.render( pageScene, pageCamera, pageTexture, true );
-
-                // Render full screen quad with generated texture
-
-                // Render second scene to screen
-                // (using first scene as regular texture)
-
                 renderer.render( scene, camera );
 
             }
-
-            function addImage(texture) {
-                var textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture } );
-                framePos += 10;
-                var quad = new THREE.Mesh( frameGeometry, textureMaterial );
-                quad.position.z = framePos;
-                quad.position.x = framePos;
-                quad.position.y = framePos;
-                pageScene.add( quad );
-
-            }
-
         </script>
+        <script src="/static/js/mock_image_getter.js"></script>
     </body>
 </html>
