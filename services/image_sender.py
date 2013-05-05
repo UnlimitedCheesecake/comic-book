@@ -2,13 +2,24 @@ import redis
 import requests
 import json
 import time
+import os
+import logging
 
 r = redis.Redis()
 
-res = requests.get('https://api.instagram.com/v1/tags/carl/media/recent?access_token=106417.41beab8.b0c84849cab346ffa6a624cf43cb1eb1')
-images = json.loads(res.content)['data']
+access_token = os.environ.get('ACCESS_TOKEN', None)
 
-for image in images:
-    url = image['images']['standard_resolution']['url']
-    r.publish('comic', url)
-    time.sleep(5)
+if not access_token:
+    raise Exception
+
+tag = os.environ.get('TAG', 'test')
+
+while True:
+    res = requests.get('https://api.instagram.com/v1/tags/%s/media/recent?access_token=%s' % (tag, access_token))
+    images = json.loads(res.content)['data']
+
+    for image in images:
+        url = image['images']['standard_resolution']['url']
+        logging.debug('Publishing %s' % url)
+        r.publish('comic', url)
+        time.sleep(5)
