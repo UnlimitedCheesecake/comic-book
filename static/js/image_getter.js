@@ -6,15 +6,27 @@
         $images = $('.images');
 
     src.addEventListener('comic', function (evt) {
-        var imageName = evt.data,
+        var imageData = JSON.parse(evt.data),
+            imageName = imageData.img,
+            caption = imageData.caption,
+            $container = document.createElement('span'),
+            $caption = document.createElement('span'),
             $img = document.createElement('img');
+
+        $images.appendChild($container);
+        $container.appendChild($caption);
+        $container.appendChild($img);
+
+        $container.classList.add('img');
+
+        $caption.innerHTML = caption;
+        $caption.classList.add('caption');
 
         $img.src = imageName;
 
         $img.addEventListener('load', function (evt) {
-            $images.appendChild($img);
             setTimeout(
-                function () { $img.classList.add('visible'); },
+                function () { $container.classList.add('visible'); },
                 0
             );
         });

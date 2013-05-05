@@ -18,6 +18,7 @@ while True:
     images = json.loads(res.content)['data']
 
     for image in images:
-        url = image['images']['standard_resolution']['url']
-        r.publish('comic', url)
+        caption = image['caption']['text']
+        img = image['images']['standard_resolution']['url']
+        r.publish('comic', json.dumps({'caption': caption, 'img': img}))
         time.sleep(5)
