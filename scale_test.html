@@ -26,14 +26,18 @@
 
             .two-panels, .four-panels {
                 width: 504px;
+                height: 504px;
+                min-height: 504px;
                 margin-bottom: 10px;
                 overflow: hidden;
                 padding: 10px;
+                position: relative;
             }
 
             .wrapper {
                 width: 100%;
                 height: 100%;
+                position: absolute;
             }
 
             .first-panel {
@@ -62,6 +66,10 @@
                 </div>
             </div>
         </div>
+        <div class="vars">
+            <div><label for="x">x</label><input type="text" id="x" /></div>
+            <div><label for="y">y</label><input type="text" id="y" /></div>
+        </div>
         <div class="four-panels">
             <div class="four-wrapper">
                 <div class="panel first-panel">
@@ -74,5 +82,46 @@
                 </div>
             </div>
         </div>
+        <script>
+            var $ = document.querySelector.bind(document),
+                $inputX = $('#x'),
+                $inputY = $('#y'),
+                centerImage = function (container, el) {
+                    var containerHeight = 500,
+                        containerWidth = 500,
+                        elHeight = el.clientHeight,
+                        elWidth = el.clientWidth,
+                        elTop = el.offsetTop,
+                        elLeft = el.offsetLeft,
+                        elHeight = el.clientHeight,
+                        elWidth = el.clientWidth,
+                        centerX = containerWidth / 2,
+                        centerY = containerHeight / 2,
+                        xMovement = centerX - elLeft - (elHeight / 2),
+                        yMovement = centerY - elTop - (elWidth / 2);
+
+                    console.log('centerX', centerX, 'centerY', centerY);
+                    console.log('elLeft', elLeft, 'elTop', elTop);
+                    console.log('xMovement', xMovement, 'yMovement', yMovement);
+
+                    $inputX.value = xMovement;
+                    $inputY.value = yMovement;
+
+                    container.style.webkitTransform = 'translateX(' + xMovement + 'px) translateY(' + yMovement + 'px)';
+                },
+                container = $('.four-wrapper'),
+                first = $('.four-wrapper .first-panel');
+                second = $('.four-wrapper .second-panel');
+                third = $('.four-wrapper .third-panel');
+                fourth = $('.four-wrapper .fourth-panel');
+
+                $inputX.addEventListener('input', function () {
+                    container.style.webkitTransform = 'translateX(' + $inputX.value + 'px) translateY(' + $inputY.value + 'px)';
+                }, true);
+
+                $inputY.addEventListener('input', function () {
+                    container.style.webkitTransform = 'translateX(' + $inputX.value + 'px) translateY(' + $inputY.value + 'px)';
+                }, true);                
+        </script>
     </body>    
 </html>

@@ -30,6 +30,6 @@ Displays images in realtime in WebGL as a comic book.
 
  - ~Get Instagram description overlapping image. Use http://www.fontsquirrel.com/fonts/Komika-Text.~
  - ~Create some test transitions.~
- - Write a function that can transition to an image.
+ - ~~Write a function that can transition to an image.~~
  - Make function set opacity of other images to 0.
  - Make function that can take a set of images and display them in the container.
